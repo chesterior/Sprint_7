@@ -1,20 +1,24 @@
 package ru.praktikum_services.qa_scooter;
 
-import io.restassured.response.ValidatableResponse;
+import io.qameta.allure.junit4.DisplayName;
+import io.restassured.response.Response;
 import org.junit.Test;
+
+import static org.hamcrest.Matchers.equalTo;
 
 public class CourierCreateTest {
     @Test
+    @DisplayName("Успешное создание курьера статус 201")
     public void courierCanBeCreated() {
-        Courier courier = new Courier();
+        Courier courier = new Courier("ninja777", "1234", "saske");
         CourierClient courierClient = new CourierClient();
 
-        ValidatableResponse createResponse = courierClient.create(courier);
+        Response createResponse = courierClient.create(courier);
 
-        int statusCode = createResponse.extract().statusCode();
-        boolean isCouriersCreated = createResponse.extract().path("ok");
-
-        ValidatableResponse loginResponse = courierClient.login(CourierCredentials.from(courier));
-        int courierId = loginResponse.extract().path("id");
+        createResponse
+                .then()
+                .assertThat()
+                .statusCode(201)
+                .body("ok", equalTo(true));
     }
 }
