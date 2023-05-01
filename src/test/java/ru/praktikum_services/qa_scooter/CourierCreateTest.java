@@ -4,6 +4,7 @@ import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.equalTo;
 
 public class CourierCreateTest {
@@ -20,6 +21,26 @@ public class CourierCreateTest {
                 .log().all()
                 .assertThat()
                 .statusCode(201)
+                .body("ok", equalTo(true));
+
+        CourierCredentials courierCredentials = new CourierCredentials("ninja13081992", "1234");
+
+        Response loginResponse = courierClient.login(courierCredentials);
+        loginResponse
+                .then()
+                .log().all()
+                .assertThat()
+                .statusCode(200)
+                .body("id", notNullValue());
+
+        int courierId = loginResponse.path("id");
+
+        Response deleteResponse = courierClient.delete(courierId);
+        deleteResponse
+                .then()
+                .log().all()
+                .assertThat()
+                .statusCode(200)
                 .body("ok", equalTo(true));
     }
 

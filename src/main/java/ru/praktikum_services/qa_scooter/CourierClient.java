@@ -24,4 +24,12 @@ public class CourierClient extends RestClient {
                 .body(credentials)
                 .post(COURIER_LOGIN_PATH);
     }
+
+    public Response delete(int courierDelete) {
+        return given()
+                .spec(getBaseSpec())
+                .log().all()
+                .when()
+                .delete("/api/v1/courier/" + courierDelete);
+    }
 }
