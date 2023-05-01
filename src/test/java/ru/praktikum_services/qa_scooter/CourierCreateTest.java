@@ -10,7 +10,7 @@ public class CourierCreateTest {
     @Test
     @DisplayName("Успешное создание курьера статус 201")
     public void courierCanBeCreated() {
-        Courier courier = new Courier("ninja777", "1234", "saske");
+        Courier courier = new Courier("ninja777777", "1234", "saske");
         CourierClient courierClient = new CourierClient();
 
         Response createResponse = courierClient.create(courier);
