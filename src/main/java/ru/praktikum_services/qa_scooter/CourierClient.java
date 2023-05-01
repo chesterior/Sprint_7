@@ -12,6 +12,7 @@ public class CourierClient extends RestClient {
         return given()
                 .spec(getBaseSpec())
                 .body(courier)
+                .log().all()
                 .when()
                 .post(COURIER_PATH);
     }

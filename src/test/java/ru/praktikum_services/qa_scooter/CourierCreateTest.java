@@ -17,6 +17,7 @@ public class CourierCreateTest {
 
         createResponse
                 .then()
+                .log().all()
                 .assertThat()
                 .statusCode(201)
                 .body("ok", equalTo(true));
