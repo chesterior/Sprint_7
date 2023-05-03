@@ -7,6 +7,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.equalTo;
+import static io.qameta.allure.Allure.step;
 
 public class CourierLoginTest {
     @Test
@@ -62,18 +63,26 @@ public class CourierLoginTest {
     @Test
     @DisplayName("Ошибка если одного из полей нет")
     public void courierCanBeLoginErrorWithoutRequiredFields() {
-        CourierCredentials courierCredentials = new CourierCredentials("123454321");
+        Courier courier = new Courier("ninja13081992", "123454321", "saske");
+        CourierCredentials courierCredentialsPassword = new CourierCredentials("123454321");
+        CourierCredentials courierCredentials = new CourierCredentials("ninja13081992", "123454321");
         CourierClient courierClient = new CourierClient();
 
-        Response loginResponse = courierClient.login(courierCredentials);
+        courierClient.create(courier);
 
-        loginResponse
+        Response loginResponsePassword = courierClient.login(courierCredentialsPassword);
+        loginResponsePassword
                 .then()
                 .log().all()
                 .assertThat()
                 .statusCode(400)
                 .body("code", equalTo(400))
                 .body("message", equalTo("Недостаточно данных для входа"));
+
+        Response loginResponse = courierClient.login(courierCredentials);
+        int courierId = loginResponse.path("id");
+
+        courierClient.delete(courierId);
     }
 }
 

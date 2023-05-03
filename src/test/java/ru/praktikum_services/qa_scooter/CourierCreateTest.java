@@ -47,9 +47,10 @@ public class CourierCreateTest {
     @Test
     @DisplayName("Нельзя создать двух одинаковых курьеров")
     public void courierCanBeCreatedOnlyUnique() {
-        Courier courier = new Courier("ninja777777", "1234", "saske");
+        Courier courier = new Courier("ninja13081992", "1234", "saske");
         CourierClient courierClient = new CourierClient();
 
+        courierClient.create(courier);
         Response createResponse = courierClient.create(courier);
 
         createResponse
@@ -59,6 +60,13 @@ public class CourierCreateTest {
                 .statusCode(409)
                 .body("code", equalTo(409))
                 .body("message", equalTo("Этот логин уже используется. Попробуйте другой."));
+
+        CourierCredentials courierCredentials = new CourierCredentials("ninja13081992", "1234");
+
+        Response loginResponse = courierClient.login(courierCredentials);
+        int courierId = loginResponse.path("id");
+
+        courierClient.delete(courierId);
     }
 
     @Test

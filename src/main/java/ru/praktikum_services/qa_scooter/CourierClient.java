@@ -7,6 +7,7 @@ import static io.restassured.RestAssured.given;
 public class CourierClient extends RestClient {
     private static final String COURIER_PATH = "/api/v1/courier";
     private static final String COURIER_LOGIN_PATH = "/api/v1/courier/login";
+    private static final String COURIER_DELETE_PATH = "/api/v1/courier/";
 
     public Response create(Courier courier) {
         return given()
@@ -30,6 +31,6 @@ public class CourierClient extends RestClient {
                 .spec(getBaseSpec())
                 .log().all()
                 .when()
-                .delete("/api/v1/courier/" + courierDelete);
+                .delete(COURIER_DELETE_PATH + courierDelete);
     }
 }
