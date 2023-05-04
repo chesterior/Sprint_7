@@ -12,4 +12,5 @@ public class CourierCredentials {
     public CourierCredentials(String password) {
         this.password = password;
     }
+
 }

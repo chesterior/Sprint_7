@@ -11,8 +11,9 @@ public class CourierCreateTest {
     @Test
     @DisplayName("Успешное создание курьера")
     public void courierCanBeCreated() {
-        Courier courier = new Courier("ninja13081992", "1234", "saske");
         CourierClient courierClient = new CourierClient();
+        Courier courier = CourierGenerator.getRandom();
+        CourierCredentials courierCredentials = new CourierCredentials(courier.getLogin(), courier.getPassword());
 
         Response createResponse = courierClient.create(courier);
 
@@ -22,8 +23,6 @@ public class CourierCreateTest {
                 .assertThat()
                 .statusCode(201)
                 .body("ok", equalTo(true));
-
-        CourierCredentials courierCredentials = new CourierCredentials("ninja13081992", "1234");
 
         Response loginResponse = courierClient.login(courierCredentials);
         loginResponse
@@ -47,8 +46,9 @@ public class CourierCreateTest {
     @Test
     @DisplayName("Нельзя создать двух одинаковых курьеров")
     public void courierCanBeCreatedOnlyUnique() {
-        Courier courier = new Courier("ninja13081992", "1234", "saske");
         CourierClient courierClient = new CourierClient();
+        Courier courier = CourierGenerator.getRandom();
+        CourierCredentials courierCredentials = new CourierCredentials(courier.getLogin(), courier.getPassword());
 
         courierClient.create(courier);
         Response createResponse = courierClient.create(courier);
@@ -61,8 +61,6 @@ public class CourierCreateTest {
                 .body("code", equalTo(409))
                 .body("message", equalTo("Этот логин уже используется. Попробуйте другой."));
 
-        CourierCredentials courierCredentials = new CourierCredentials("ninja13081992", "1234");
-
         Response loginResponse = courierClient.login(courierCredentials);
         int courierId = loginResponse.path("id");
 
@@ -72,8 +70,9 @@ public class CourierCreateTest {
     @Test
     @DisplayName("Ошибка если одного из полей нет")
     public void courierCanBeCreatedErrorWithoutRequiredFields() {
-        Courier courier = new Courier("ninja777777", "saske");
         CourierClient courierClient = new CourierClient();
+        Courier courier = CourierGenerator.getRandomWithoutPassword();
+        CourierCredentials courierCredentials = new CourierCredentials(courier.getLogin(), courier.getPassword());
 
         Response createResponse = courierClient.create(courier);
 
@@ -84,5 +83,13 @@ public class CourierCreateTest {
                 .statusCode(400)
                 .body("code", equalTo(400))
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"));
+
+        Response loginResponse = courierClient.login(courierCredentials);
+
+        int statusCode = loginResponse.statusCode();
+        if (statusCode == 200) {
+            int courierId = loginResponse.path("id");
+            courierClient.delete(courierId);
+        }
     }
 }
